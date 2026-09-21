@@ -68,6 +68,13 @@ export default function Hero3D() {
               scrub: 1,
               pin: true,
               anticipatePin: 1,
+              // One scroll lands one hero stage: rest → zoomed → release.
+              snap: {
+                snapTo: [0, 0.5, 1],
+                duration: 0.4,
+                delay: 0.1,
+                ease: "power1.inOut",
+              },
               onToggle: (self) => {
                 const bg = root.querySelector<HTMLElement>(
                   '[data-hero-layer="background"]',
