@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Hero3D from "@/components/hero-3d";
 import NavBar from "@/components/nav-bar";
+import RouteTicker from "@/components/route-ticker";
 import ServiceCard from "@/components/service-card";
 import StatBlock from "@/components/stat-block";
 import StepJourneyScroller from "@/components/step-journey-scroller";
@@ -14,12 +15,13 @@ export default function Home() {
       <NavBar overHero />
       <main data-page="home" id="main-content" tabIndex={-1}>
         <Hero3D />
+        <RouteTicker />
 
         <div className="mx-auto flex w-full max-w-[var(--page-max-width)] flex-col gap-100 px-16 py-100 md:px-24">
           <StepJourneyScroller />
 
           <section data-reveal data-section="stats-teaser" aria-label="Company statistics">
-            <div className="grid grid-cols-2 gap-24 md:grid-cols-4">
+            <div data-reveal-group="stats" className="grid grid-cols-2 gap-24 md:grid-cols-4">
               {about.stats.map((stat) => (
                 <StatBlock key={stat.label} value={stat.value} label={stat.label} />
               ))}
@@ -40,7 +42,7 @@ export default function Home() {
               </h2>
               <p className="max-w-[60ch] text-body text-pebble">{services.body}</p>
             </div>
-            <div className="mt-24 grid gap-24 sm:grid-cols-2 lg:grid-cols-3">
+            <div data-reveal-group="services" className="mt-24 grid gap-24 sm:grid-cols-2 lg:grid-cols-3">
               {services.items.slice(0, 3).map((service) => (
                 <ServiceCard
                   key={service.title}
@@ -65,7 +67,7 @@ export default function Home() {
           aria-label="Get a quote"
           className="relative w-full overflow-hidden bg-obsidian"
         >
-          <div className="absolute inset-0">
+          <div data-parallax="cta-banner" className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
             <Image
               src={images.contactBanner.src}
               alt={images.contactBanner.alt}

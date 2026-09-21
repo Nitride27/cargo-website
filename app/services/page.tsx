@@ -21,7 +21,7 @@ export default function ServicesPage() {
 
           <section data-reveal data-section="services-grid" aria-label="All services">
             <h2 className="sr-only">All services</h2>
-            <div className="grid gap-24 sm:grid-cols-2 lg:grid-cols-3">
+            <div data-reveal-group="services-all" className="grid gap-24 sm:grid-cols-2 lg:grid-cols-3">
               {services.items.map((service) => (
                 <ServiceCard
                   key={service.title}

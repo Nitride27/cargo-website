@@ -32,6 +32,16 @@ export interface HeroCopy {
   progress: { current: string; total: string; label: string };
 }
 
+/** Slow route ticker between hero and steps — echoes the trust-logo row. */
+export const tickerRoutes: string[] = [
+  "Shanghai → Los Angeles",
+  "Singapore → Rotterdam",
+  "Kathmandu → Delhi",
+  "Dubai → Mombasa",
+  "Hamburg → New York",
+  "Busan → Seattle",
+];
+
 export const hero: HeroCopy = {
   eyebrow: "GLOBAL FREIGHT SOLUTIONS",
   title: "Your Cargo. Our Journey.",

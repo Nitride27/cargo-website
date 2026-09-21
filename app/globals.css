@@ -146,10 +146,36 @@ body {
   font-family: var(--font-f37bolton);
 }
 
+/* Phone lockdown: no page-level side scrolling, ever. `clip` (not
+ * `hidden`) preserves `position: sticky` descendants; the `hidden`
+ * line is only a fallback for browsers without `clip` support. */
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
 /* Phase 5 — Polish: visible keyboard focus on every interactive element.
  * Obsidian 2px outline + offset; follows pill geometry in modern browsers.
  * Inputs keep their focus:border-obsidian treatment in addition to this. */
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
   outline: 2px solid var(--color-obsidian);
   outline-offset: 2px;
+}
+
+/* Route ticker marquee: duplicated track translates -50% on a slow loop.
+ * Transform-only, no shadows/gradients. Reduced-motion gets a static row. */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-ticker="track"] {
+    animation: ticker-scroll 40s linear infinite;
+  }
 }

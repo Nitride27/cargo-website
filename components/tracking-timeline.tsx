@@ -1,3 +1,9 @@
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
+import { getGsap } from "@/lib/gsap";
+import { usePrefersReducedMotion } from "@/lib/motion-prefs";
+
 interface TimelineEvent {
   label: string;
   date: string;
@@ -12,14 +18,38 @@ interface TrackingTimelineProps {
 /**
  * Horizontal stepper (Picked Up → In Transit → Customs → Out for Delivery).
  * Status reads from dot fill only: obsidian done, tiny ember current,
- * mist outline upcoming. No animation — Stage 4 only if requested.
+ * mist outline upcoming. Dots pop in with a stagger on first entry;
+ * reduced-motion renders them statically.
  */
 export default function TrackingTimeline({
   events,
   activeIndex = 1,
 }: TrackingTimelineProps) {
+  const rootRef = useRef<HTMLOListElement>(null);
+  const reduced = usePrefersReducedMotion();
+
+  useLayoutEffect(() => {
+    const instances = getGsap();
+    const root = rootRef.current;
+    if (!instances || !root || reduced) return;
+    const { gsap, ScrollTrigger } = instances;
+    const ctx = gsap.context(() => {
+      const dots = gsap.utils.toArray<HTMLElement>("[data-timeline-dot]", root);
+      gsap.set(dots, { scale: 0, transformOrigin: "center" });
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top 88%",
+        once: true,
+        onEnter: () =>
+          gsap.to(dots, { scale: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.12 }),
+      });
+    }, root);
+    return () => ctx.revert();
+  }, [reduced]);
+
   return (
     <ol
+      ref={rootRef}
       data-timeline="root"
       className="grid grid-cols-2 gap-24 md:grid-cols-4"
     >
@@ -35,6 +65,7 @@ export default function TrackingTimeline({
           >
             <div className="flex items-center gap-8" aria-hidden="true">
               <span
+                data-timeline-dot={event.label}
                 className={`h-12 w-12 shrink-0 rounded-full ${
                   current
                     ? "bg-ember-orange"
