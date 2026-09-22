@@ -21,7 +21,7 @@ export default function ContactPage() {
           aria-label="Contact us"
           className="relative w-full overflow-hidden bg-obsidian"
         >
-          <div className="absolute inset-0">
+          <div data-parallax="contact-banner" className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
             <Image
               src={images.contactBanner.src}
               alt={images.contactBanner.alt}
@@ -44,11 +44,11 @@ export default function ContactPage() {
 
         <div className="mx-auto grid w-full max-w-[var(--page-max-width)] gap-40 px-16 py-100 md:grid-cols-2 md:px-24">
           <section data-reveal data-section="contact-channels" aria-label="Contact channels">
-            <ul className="flex flex-col gap-24">
+            <ul data-reveal-group="channels" className="flex flex-col gap-24">
               {contact.channels.map((channel) => {
                 const Icon = channelIcons[channel.kind];
                 return (
-                  <li key={channel.label} className="flex gap-16">
+                  <li key={channel.label} data-reveal-item="" className="flex gap-16">
                     <span className="flex h-40 w-40 shrink-0 items-center justify-center rounded-full border border-mist text-obsidian">
                       <Icon size={16} strokeWidth={1.5} aria-hidden="true" />
                     </span>

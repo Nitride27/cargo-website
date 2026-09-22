@@ -71,11 +71,11 @@ export default async function JourneyStepPage({
               <p className="mt-16 max-w-[60ch] text-body text-pebble">
                 {journey.body}
               </p>
-              <ul className="mt-24 grid grid-cols-1 gap-24 sm:grid-cols-3">
+              <ul data-reveal-group="step-bullets" className="mt-24 grid grid-cols-1 gap-24 sm:grid-cols-3">
                 {journey.bullets.map((bullet) => {
                   const Icon = bulletIcons[bullet.icon] ?? Package;
                   return (
-                    <li key={bullet.label} className="flex flex-col gap-8">
+                    <li key={bullet.label} data-reveal-item="" className="flex flex-col gap-8">
                       <span className="flex h-40 w-40 items-center justify-center rounded-full border border-mist text-obsidian">
                         <Icon size={16} strokeWidth={1.5} aria-hidden="true" />
                       </span>
@@ -88,7 +88,7 @@ export default async function JourneyStepPage({
               </ul>
             </section>
 
-            <aside data-section="step-rail" aria-label="Journey steps">
+            <aside data-reveal data-section="step-rail" aria-label="Journey steps">
               <StepIndicator
                 orientation="vertical"
                 activeStep={journey.number}

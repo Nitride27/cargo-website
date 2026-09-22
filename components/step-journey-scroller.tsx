@@ -39,11 +39,12 @@ export default function StepJourneyScroller() {
     if (reduced) return;
     const { gsap, ScrollTrigger } = instances;
     const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-      mm.add("(min-width: 768px)", () => {
-        const stage = root.querySelector<HTMLElement>("[data-steps-stage]");
-        const cards = gsap.utils.toArray<HTMLElement>("[data-steps-card]", root);
-        if (!stage || cards.length === 0) return;
+      // Deck on every viewport (explicit override of the no-pinning rule):
+      // absolute-stacked cards driven by a scrub-only trigger over the
+      // sticky room. Reduced-motion returns early above — static flow.
+      const stage = root.querySelector<HTMLElement>("[data-steps-stage]");
+      const cards = gsap.utils.toArray<HTMLElement>("[data-steps-card]", root);
+      if (!stage || cards.length === 0) return;
         // Stack the deck: stage takes the first card's height (next/image
         // reserves aspect-ratio space, so this holds pre-load).
         stage.style.position = "relative";
@@ -104,7 +105,6 @@ export default function StepJourneyScroller() {
         window.addEventListener("load", onLoad);
         ScrollTrigger.refresh();
         return () => window.removeEventListener("load", onLoad);
-      });
     }, root);
     return () => ctx.revert();
   }, [reduced]);
@@ -116,14 +116,19 @@ export default function StepJourneyScroller() {
       aria-label="How it works"
       className="-mx-16 bg-warm-cream px-16 md:-mx-24 md:px-24"
     >
-      {/* Scroll room (desktop): the sticky panel holds while this scrolls. */}
-      <div data-steps-room className="md:relative md:h-[350vh]">
+      {/* Scroll room: the sticky panel holds while this scrolls.
+        Height applies only when motion is allowed — otherwise the
+        stacked cards flow with no gap. */}
+      <div data-steps-room className="motion-safe:relative motion-safe:h-[350vh]">
       <div
         data-steps-panel="deck"
-        className="md:sticky md:top-0 md:flex md:h-svh md:items-center md:overflow-hidden"
+        className="motion-safe:sticky motion-safe:top-0 motion-safe:flex motion-safe:h-screen motion-safe:h-svh motion-safe:items-center motion-safe:overflow-hidden"
       >
       <div className="grid w-full gap-24 md:grid-cols-[1fr_1.4fr_0.7fr]">
-        <div className="flex flex-col gap-16">
+        {/* min-w-0 on both columns: the rail's non-wrapping row is 810px of
+          max-content — without this it forces the whole mobile grid track
+          to 810px wide (giant photos + page side-scroll). */}
+        <div className="flex min-w-0 flex-col gap-16">
           <p className="text-caption text-pebble">{howItWorks.eyebrow}</p>
           <h2 className="text-heading font-bold text-obsidian leading-[var(--leading-heading)] tracking-[var(--tracking-heading)]">
             {howItWorks.title}
@@ -174,7 +179,7 @@ export default function StepJourneyScroller() {
           ))}
         </div>
 
-        <div>
+        <div className="min-w-0">
           <ol data-steps="rail" aria-label="Journey steps" className="relative flex flex-row gap-16 overflow-x-auto md:flex-col md:gap-0 md:overflow-visible">
             <span
               aria-hidden="true"

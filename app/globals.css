@@ -60,7 +60,10 @@
   --spacing-100: 100px;
 
   /* Layout */
-  --page-max-width: 1440px;
+  /* Full-bleed rows: content anchors to the viewport edges at every
+   * resolution instead of parking in a centered column on wide screens.
+   * Text measure stays readable via max-w-[..ch] caps on copy blocks. */
+  --page-max-width: none;
   --section-gap: 100px;
   --card-padding: 24px;
   --element-gap: 16px;

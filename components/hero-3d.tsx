@@ -11,16 +11,14 @@ import { usePrefersReducedMotion } from "@/lib/motion-prefs";
 /**
  * Mockup-style hero: full-bleed ship photo, left-aligned eyebrow +
  * display headline + subtitle + black pill CTA, scroll hint bottom-left
- * and 01/05 progress bottom-right. No pin — the next section flows in
- * naturally.
+ * and 01/05 progress bottom-right.
  *
  * The scroll-out is a small zoom with vertical motion blur, pinned just
- * long enough to last ~2 scrolls. The photo eases out across the whole
- * hold while two aria-hidden ghost copies smear vertically behind it
- * (offset y, opacity swelling then releasing), trailing upward as you
- * scroll down — then the pin releases and the next section flows in.
- * Nothing scales past rest. Transform/opacity only — no filters.
- * Reduced-motion is static.
+ * long enough to last ~2 scrolls, on ALL viewports (explicit override of
+ * the no-pinning-below-768px rule): the photo eases out across the hold
+ * while two aria-hidden ghost copies smear vertically behind it.
+ * Staging is gated on `motion-safe:` (not breakpoints), so reduced-motion
+ * users always get the static flow layout. Transform/opacity only.
  */
 export default function Hero3D() {
   const [firstLine, secondLine] = hero.title.split(". ").map((part, i, arr) =>
@@ -52,75 +50,59 @@ export default function Hero3D() {
           0.2,
         );
 
-      const mm = gsap.matchMedia();
-      // Desktop: pin one extra viewport (~2 scrolls). The zoom-out and
-      // vertical trails play across the whole hold, then release.
-      mm.add("(min-width: 768px)", () => {
-        const layers = gsap.utils.toArray<HTMLElement>("[data-hero-trail]", root);
-        gsap.set(layers, { scale: 1.06, y: 0 });
-        gsap
-          .timeline({
-            defaults: { ease: "none" },
-            scrollTrigger: {
-              trigger: root,
-              start: "top top",
-              end: "+=100%",
-              scrub: 1,
-              pin: true,
-              anticipatePin: 1,
-              // One scroll lands one hero stage: rest → zoomed → release.
-              snap: {
-                snapTo: [0, 0.5, 1],
-                duration: 0.4,
-                delay: 0.1,
-                ease: "power1.inOut",
-              },
-              onToggle: (self) => {
-                const bg = root.querySelector<HTMLElement>(
-                  '[data-hero-layer="background"]',
-                );
-                if (bg) bg.style.willChange = self.isActive ? "transform" : "";
-              },
-            },
-          })
-          .to('[data-hero-layer="background"]', { scale: 1, y: 50, duration: 1 }, 0)
-          .to(
-            '[data-hero-trail="1"]',
-            {
-              keyframes: [
-                { y: -30, opacity: 0.3, duration: 0.4 },
-                { y: -8, opacity: 0, duration: 0.4 },
-              ],
-            },
-            0,
-          )
-          .to(
-            '[data-hero-trail="2"]',
-            {
-              keyframes: [
-                { y: -56, opacity: 0.16, duration: 0.45 },
-                { y: -18, opacity: 0, duration: 0.35 },
-              ],
-            },
-            0,
-          )
-          .to("[data-hero-copy]", { y: -90, opacity: 0, duration: 0.3 }, 0)
-          .to('[data-hero-layer="bottom"]', { opacity: 0, duration: 0.12 }, 0);
-        ScrollTrigger.refresh();
-      });
-      // Mobile: single cheap single-axis parallax, no trails.
-      mm.add("(max-width: 767px)", () => {
-        gsap.to('[data-hero-layer="background"]', {
-          y: 60,
-          ease: "none",
+      // Pin one extra viewport (~2 scrolls) on every viewport — the
+      // zoom-out and vertical trails play across the whole hold.
+      const layers = gsap.utils.toArray<HTMLElement>("[data-hero-trail]", root);
+      gsap.set(layers, { scale: 1.06, y: 0 });
+      gsap
+        .timeline({
+          defaults: { ease: "none" },
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            end: "bottom top",
-            scrub: true,
+            end: "+=100%",
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            // One scroll lands one hero stage: rest → zoomed → release.
+            snap: {
+              snapTo: [0, 0.5, 1],
+              duration: 0.4,
+              delay: 0.1,
+              ease: "power1.inOut",
+            },
+            onToggle: (self) => {
+              const bg = root.querySelector<HTMLElement>(
+                '[data-hero-layer="background"]',
+              );
+              if (bg) bg.style.willChange = self.isActive ? "transform" : "";
+            },
           },
-        });
-      });
+        })
+        .to('[data-hero-layer="background"]', { scale: 1, y: 50, duration: 1 }, 0)
+        .to(
+          '[data-hero-trail="1"]',
+          {
+            keyframes: [
+              { y: -30, opacity: 0.3, duration: 0.4 },
+              { y: -8, opacity: 0, duration: 0.4 },
+            ],
+          },
+          0,
+        )
+        .to(
+          '[data-hero-trail="2"]',
+          {
+            keyframes: [
+              { y: -56, opacity: 0.16, duration: 0.45 },
+              { y: -18, opacity: 0, duration: 0.35 },
+            ],
+          },
+          0,
+        )
+        .to("[data-hero-copy]", { y: -90, opacity: 0, duration: 0.3 }, 0)
+        .to('[data-hero-layer="bottom"]', { opacity: 0, duration: 0.12 }, 0);
+      ScrollTrigger.refresh();
     }, root);
     return () => ctx.revert();
   }, [reduced]);
@@ -130,7 +112,7 @@ export default function Hero3D() {
       ref={rootRef}
       data-hero="root"
       aria-label="CargoFlow introduction"
-      className="relative flex h-svh w-full flex-col overflow-hidden bg-obsidian"
+      className="relative flex min-h-screen w-full flex-col bg-obsidian motion-safe:h-screen motion-safe:h-svh motion-safe:overflow-hidden"
     >
       {/* Oversized 8% so the zoom-out + drift never reveal edges. */}
       <div data-hero-layer="background" className="absolute inset-x-0 -bottom-[8%] -top-[8%]">
@@ -150,7 +132,7 @@ export default function Hero3D() {
           key={n}
           data-hero-trail={n}
           aria-hidden="true"
-          className="absolute inset-x-0 -bottom-[90px] -top-[90px] hidden opacity-0 motion-safe:md:block"
+          className="absolute inset-x-0 -bottom-[90px] -top-[90px] hidden opacity-0 motion-safe:block"
         >
           <Image
             src={images.hero.src}
@@ -164,14 +146,14 @@ export default function Hero3D() {
 
       <div
         data-hero-copy="intro"
-        className="relative z-10 mx-auto flex w-full max-w-[var(--page-max-width)] flex-1 flex-col justify-end px-16 pb-40 pt-100 text-pure-white md:px-24"
+        className="relative z-10 mx-auto flex w-full max-w-[var(--page-max-width)] flex-1 flex-col justify-end px-16 pb-[max(var(--spacing-24),5svh)] pt-[max(var(--spacing-40),10svh)] text-pure-white md:px-24"
       >
         <p data-hero-enter="eyebrow" className="text-caption tracking-[var(--tracking-caption)]">
           {hero.eyebrow}
         </p>
         <h1
           data-hero-enter="headline"
-          className="mt-16 max-w-[12ch] text-heading-lg font-bold leading-[var(--leading-heading-lg)] tracking-[var(--tracking-heading-lg)] md:text-display md:leading-[var(--leading-display)] md:tracking-[var(--tracking-display)]"
+          className="mt-16 max-w-[12ch] text-[clamp(var(--text-heading-lg),1rem_+_6vw,var(--text-display))] font-bold leading-[var(--leading-heading-lg)] tracking-[var(--tracking-heading-lg)] md:leading-[var(--leading-display)] md:tracking-[var(--tracking-display)]"
         >
           {firstLine}
           <br />

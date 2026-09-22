@@ -39,7 +39,7 @@ export default function AboutPage() {
           </section>
 
           <section data-reveal data-section="stats-bar" aria-label="Company statistics">
-            <div className="grid grid-cols-2 gap-24 md:grid-cols-4 md:divide-x md:divide-mist">
+            <div data-reveal-group="about-stats" className="grid grid-cols-2 gap-24 md:grid-cols-4 md:divide-x md:divide-mist">
               {about.stats.map((stat) => (
                 <div key={stat.label} className="md:pl-24 md:first:pl-0">
                   <StatBlock value={stat.value} label={stat.label} />
@@ -54,7 +54,7 @@ export default function AboutPage() {
           aria-label="Our commitment"
           className="relative w-full overflow-hidden bg-obsidian"
         >
-          <div className="absolute inset-0">
+          <div data-parallax="commitment-banner" className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
             <Image
               src={images.aboutCommitment.src}
               alt={images.aboutCommitment.alt}

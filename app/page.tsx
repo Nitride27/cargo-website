@@ -34,7 +34,7 @@ export default function Home() {
             </Link>
           </section>
 
-          <section data-reveal data-section="services-teaser" aria-label="Services preview">
+          <section data-reveal data-section="services-teaser" id="services-teaser" aria-label="Services preview">
             <div className="flex flex-col gap-16">
               <p className="text-caption text-pebble">{services.eyebrow}</p>
               <h2 className="text-heading font-bold text-obsidian leading-[var(--leading-heading)] tracking-[var(--tracking-heading)]">
