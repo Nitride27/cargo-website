@@ -52,7 +52,7 @@ export default function AboutPage() {
         <section
           data-section="commitment-banner"
           aria-label="Our commitment"
-          className="relative w-full overflow-hidden bg-obsidian"
+          className="relative min-h-[440px] w-full overflow-hidden bg-obsidian md:aspect-[5/2]"
         >
           <div data-parallax="commitment-banner" className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
             <Image

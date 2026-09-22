@@ -65,7 +65,7 @@ export default function Home() {
         <section
           data-section="cta-banner"
           aria-label="Get a quote"
-          className="relative w-full overflow-hidden bg-obsidian"
+          className="relative min-h-[440px] w-full overflow-hidden bg-obsidian md:aspect-[5/2]"
         >
           <div data-parallax="cta-banner" className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
             <Image

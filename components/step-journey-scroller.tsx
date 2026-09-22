@@ -180,7 +180,7 @@ export default function StepJourneyScroller() {
         </div>
 
         <div className="min-w-0">
-          <ol data-steps="rail" aria-label="Journey steps" className="relative flex flex-row gap-16 overflow-x-auto md:flex-col md:gap-0 md:overflow-visible">
+          <ol data-steps="rail" aria-label="Journey steps" className="relative flex snap-x flex-row gap-12 overflow-x-auto pb-4 md:flex-col md:gap-0 md:overflow-visible md:pb-0">
             <span
               aria-hidden="true"
               className="absolute bottom-12 left-0 top-12 hidden w-px bg-mist md:block"
@@ -197,7 +197,9 @@ export default function StepJourneyScroller() {
                   key={step.number}
                   data-step={step.number}
                   data-step-active={isActive ? "true" : "false"}
-                  className="relative shrink-0 border-mist pb-8 pl-0 pr-24 md:border-l md:pb-24 md:pl-24 md:pr-0 md:last:border-l-transparent md:last:pb-0"
+                  className={`relative flex shrink-0 snap-start items-center gap-8 whitespace-nowrap rounded-full border px-16 py-8 md:block md:whitespace-normal md:rounded-none md:border-0 md:border-l md:border-mist md:bg-transparent md:px-0 md:py-0 md:pb-24 md:pl-24 md:pr-0 md:last:border-l-transparent md:last:pb-0 ${
+                    isActive ? "border-obsidian bg-obsidian" : "border-mist"
+                  }`}
                 >
                   <span
                     aria-hidden="true"
@@ -205,13 +207,13 @@ export default function StepJourneyScroller() {
                       isActive ? "bg-ember-orange" : "border border-mist bg-warm-cream"
                     }`}
                   />
-                  <div className="flex flex-col gap-4">
-                    <span className="text-caption text-driftwood">{step.number}</span>
+                  <div className="flex flex-row items-center gap-8 md:flex-col md:items-start md:gap-4">
+                    <span className={`text-caption ${isActive ? "text-pure-white md:text-driftwood" : "text-driftwood"}`}>{step.number}</span>
                     <Link
                       href={`/journey/${stepSlugs[i]}`}
                       aria-current={isActive ? "step" : undefined}
                       className={`whitespace-nowrap text-body-sm hover:underline md:whitespace-normal ${
-                        isActive ? "font-bold text-obsidian" : "text-pebble"
+                        isActive ? "font-bold text-pure-white md:text-obsidian" : "text-pebble"
                       }`}
                     >
                       {step.title}
